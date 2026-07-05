@@ -73,10 +73,16 @@ JSON. Учесть, что при клике на плашку магазина 
 - Метод публичный (допущение: данные не персонализированны, нет чувствительной информации)
 - Rate limit: ~ 50 запросов/мин на IP (допущение: уточнить по результатам нагрузки)
 
-**Запрос**
+### Запрос
 Method type: GET
 BaseURL: https://api.petrushkazelenaya.com
 API name: api
 API version: v1
 Method type: /partners
-
+**Headers**
+Content-Type: application/json
+Accept: application/json
+Path params
+ - Нет
+query-parametrs:
+ - Нет
