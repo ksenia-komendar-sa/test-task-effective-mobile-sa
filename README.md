@@ -75,31 +75,86 @@ JSON. Учесть, что при клике на плашку магазина 
 
 ### Запрос
 Method type: GET
+
 BaseURL: https://api.petrushkazelenaya.com
+
 API name: api
+
 API version: v1
-Method type: /partners
+
+Method name: /partners
+
 **Headers**
-Content-Type: application/json
+
 Accept: application/json
-**Path params**
+
+**Path parameters**
+
 - Нет
-**query-parametrs**:
+
+**Query-parameters**:
+
 - Нет
-**Пример запроса:**
-GET https://api.petrushkazelenaya.com/api/v1/partners 
-**Тело запроса (Body)**
-- Нет
-**Пример ответа - Успех**
-Код HTTP: 200 OK
-**Тело ответа (Body)**:
-     "results": [
-        {
-            "id": "6fffcfchCQH5xcR2",
-            "name": "METRO",
-            "delivery_description": "Ближайшая доставка",
-            "express_delvery": "false",  
-            "delivery_date": "сегодня",
-            "delivery_from": "21:00",   
-            "delivery_to": "23:00"   
   
+**Пример запроса:**
+
+GET https://api.petrushkazelenaya.com/api/v1/partners?limit=10
+
+**Тело запроса (Body)**
+
+- Нет
+  
+**Пример ответа - Успех**
+
+Код HTTP: 200 OK
+
+**Тело ответа (Body)**:
+
+{
+    "results": [
+        {
+            "id": "2a4acb07-5471-466d-a838-7dff70bab934",
+            "name": "METRO",
+            "logo_url": "https://assets.petrushkazelenaya.com/partners/metro/logo.png",
+            "delivery": {
+                "type": "slot",
+                "slot_from": "2026-07-05T18:00:00Z",
+                "slot_to": "2026-07-05T20:00:00Z"
+            },
+            "partner_url": "https://www.metro-cc.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners"
+        },
+        {
+            "id": "12a159ba-8072-4f9a-8ec6-4c517c932f35",
+            "name": "Ашан",
+            "logo_url": "https://assets.petrushkazelenaya.com/partners/auchan/logo.png",
+            "delivery": {
+                "type": "slot",
+                "slot_from": "2026-07-05T15:00:00Z",
+                "slot_to": "2026-07-05T17:00:00Z"
+            },
+            "partner_url": "https://www.auchan.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners"
+        },
+        {
+            "id": "2255e540-7afb-4ad2-8246-728a070fec4f",
+            "name": "ВкусВилл",
+            "logo_url": "https://assets.petrushkazelenaya.com/partners/vkusvill/logo.png",
+            "delivery": {
+                "type": "express",
+                "duration_min_minutes": 20,
+                "duration_max_minutes": 60
+            },
+            "partner_url": "https://www.vkusvill.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners"
+        },
+        {
+            "id": "ce17f5fe-fcac-4585-a3d1-61bfb09987c2",
+            "name": "ВИКТОРИЯ",
+            "logo_url": "https://assets.petrushkazelenaya.com/partners/viktoria/logo.png",
+            "delivery": {
+                "type": "slot",
+                "slot_from": "2026-07-05T14:00:00Z",
+                "slot_to": "2026-07-05T16:00:00Z"
+            },
+            "partner_url": "https://victoria-group.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners"
+        }
+    ]
+}
