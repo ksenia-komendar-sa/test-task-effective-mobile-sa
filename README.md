@@ -82,7 +82,24 @@ Method type: /partners
 **Headers**
 Content-Type: application/json
 Accept: application/json
-Path params
- - Нет
-query-parametrs:
- - Нет
+**Path params**
+- Нет
+**query-parametrs**:
+- Нет
+**Пример запроса:**
+GET https://api.petrushkazelenaya.com/api/v1/partners 
+**Тело запроса (Body)**
+- Нет
+**Пример ответа - Успех**
+Код HTTP: 200 OK
+**Тело ответа (Body)**:
+     "results": [
+        {
+            "id": "6fffcfchCQH5xcR2",
+            "name": "METRO",
+            "delivery_description": "Ближайшая доставка",
+            "express_delvery": "false",  
+            "delivery_date": "сегодня",
+            "delivery_from": "21:00",   
+            "delivery_to": "23:00"   
+  
