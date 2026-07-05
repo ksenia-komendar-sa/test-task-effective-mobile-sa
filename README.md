@@ -75,9 +75,9 @@ JSON. Учесть, что при клике на плашку магазина 
 
 ### Запрос
 Method type: GET
-
+```http
 BaseURL: https://api.petrushkazelenaya.com
-
+```
 API name: api
 
 API version: v1
@@ -97,9 +97,9 @@ Accept: application/json
 - Нет
   
 **Пример запроса:**
-
+```http
 GET https://api.petrushkazelenaya.com/api/v1/partners
-
+```
 **Тело запроса (Body)**
 
 - Нет
