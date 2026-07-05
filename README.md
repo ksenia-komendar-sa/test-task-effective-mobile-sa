@@ -98,7 +98,7 @@ Accept: application/json
   
 **Пример запроса:**
 
-GET https://api.petrushkazelenaya.com/api/v1/partners?limit=10
+GET https://api.petrushkazelenaya.com/api/v1/partners
 
 **Тело запроса (Body)**
 
@@ -109,7 +109,7 @@ GET https://api.petrushkazelenaya.com/api/v1/partners?limit=10
 Код HTTP: 200 OK
 
 **Тело ответа (Body)**:
-
+```json
 {
     "results": [
         {
@@ -158,3 +158,4 @@ GET https://api.petrushkazelenaya.com/api/v1/partners?limit=10
         }
     ]
 }
+```
