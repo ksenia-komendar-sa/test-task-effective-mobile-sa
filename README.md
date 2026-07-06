@@ -140,36 +140,33 @@ GET https://api.petrushkazelenaya.com/api/v1/partners
 ```
 **Схема ответа:**
 
-| Поле | Тип | Обязательный | Описание |
+| Поле | Тип | Обязательность | Описание |
 |---|---|---|---|
 | results | array | да | Список партнёров. Пустой массив, если партнёров нет |
-| results[].id | string | да | Идентификатор партнёра |
+| results[].id | string (UUID) | да | Идентификатор партнёра |
 | results[].name | string | да | Название партнёра |
-| results[].logo_url | string | да | Ссылка на логотип партнера |
+| results[].logo_url | string (URL) | да | Ссылка на логотип партнера |
 | results[].delivery | object | да | Информация о доставке |
 | results[].delivery.type | enum: `slot`, `express` | да | Тип доставки |
-| results[].delivery.slot_from | string  | при type=slot | Начало слота |
-| results[].delivery.slot_to | string | при type=slot | Конец слота |
-| results[].delivery.duration_min_minutes | integer | при type=express | Минимальное время доставки, мин |
-| results[].delivery.duration_max_minutes | integer | при type=express | Максимальное время доставки, мин |
-| results[].partner_url | string | да | Внешняя ссылка перехода по клику на плашку |
+| results[].delivery.slot_from | string (date-time, UTC) | при type=slot | Начало слота |
+| results[].delivery.slot_to | string (date-time, UTC) | при type=slot | Конец слота |
+| results[].delivery.duration_min_minutes | integer | при type=express | Минимальное время доставки (минуты) |
+| results[].delivery.duration_max_minutes | integer | при type=express | Максимальное время доставки (минуты) |
+| results[].partner_url | string (URL) | да | Ссылка для перехода на внешний ресурс (по клику на плашку) |
 
 **Код HTTP: 200 OK**
-
 **Пример 2 - Список партнеров пустой**
 ``` json
 {
   "results": []
 }
 ```
-
 ### Обработка ошибок
 
-1. Превышен лимит запросов
-   
+1. Превышен лимит запросов   
 **Код HTTP: 429** Too Many Requests
 
-**Response Headers**:
+Response Headers:
 
 ``` http
 Retry-After: 60
@@ -178,6 +175,7 @@ X-RateLimit-Remaining: 0
 X-RateLimit-Reset: 60
 ```
 ``` json
+Тело ответа (Body):
 {
   "code": "1021",
   "message": "Превышен лимит запросов. Повторите попытку позже",
@@ -199,3 +197,5 @@ X-RateLimit-Reset: 60
     "message": "Произошла непредвиденная ошибка. Мы уже работаем над её исправлением."
 }
 ```
+## Задание 3: архитектура
+
