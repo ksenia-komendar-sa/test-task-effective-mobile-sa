@@ -191,6 +191,7 @@ X-RateLimit-Reset: 60
 **Код HTTP: 500** Internal Server Error
 
 Тело ответа (Body):
+
 ``` json
 {
     "code": "2000",
