@@ -174,8 +174,9 @@ X-RateLimit-Limit: 50
 X-RateLimit-Remaining: 0
 X-RateLimit-Reset: 60
 ```
-``` json
+
 Тело ответа (Body):
+``` json
 {
   "code": "1021",
   "message": "Превышен лимит запросов. Повторите попытку позже",
