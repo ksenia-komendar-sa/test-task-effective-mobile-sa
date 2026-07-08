@@ -201,3 +201,4 @@ X-RateLimit-Reset: 60
 ```
 ## Задание 3: архитектура
 
+![Архитектура push-уведомлений](architecture-push.png)
