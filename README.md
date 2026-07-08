@@ -214,3 +214,4 @@ X-RateLimit-Reset: 60
 4. Для устройств без Google сервисов архитектура позволяет добавить провайдеров Huawei Push Kit, RuStore Push отдельными воркерами.
 
 ![Архитектура push-уведомлений](architecture-push.png)
+[Исходник диаграммы (draw.io)](architecture-push.drawio.xml)
