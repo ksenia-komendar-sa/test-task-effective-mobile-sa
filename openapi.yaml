@@ -1,0 +1,211 @@
+openapi: 3.0.4
+info:
+  title: Food-delivery API
+  description: API спецификация для интернет-магазина "Петрушка зеленая". Это мобильное приложение по доставке еды.
+  version: 1.0.0
+  contact: 
+    name: Ксения Комендарь
+    url: https://github.com/ksenia-komendar-sa
+servers:
+  - url: https://api.petrushkazelenaya.com/api/v1
+    description: Production environment
+tags: 
+  - name: partners
+    description: магазины-партнеры
+paths:
+  /partners:
+    get:
+      tags:
+        - partners
+      summary: Получить список магазинов партнеров
+      description: Показывает список магазинов-партнеров при переходе с главного экрана 
+      operationId: getPartnerStores
+      parameters:
+        - name: offset
+          in: query
+          description: Колличество элементов которые нужно пропустить перед выдачей результата
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          description: Количество элементов на странице
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 20 
+        - name: sort
+          in: query
+          description: Сортировка по скорости доставки
+          required: false
+          schema: 
+            type: string
+            enum: 
+              - asc
+              - desc
+            default: asc
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerListResponse'
+        '429':
+          description: Превышен лимит запросов. Повторите попытку позже
+          headers:
+            Retry-After: 
+              description: Время ожидания в секундах
+              required: true
+              schema:
+                type: integer
+            X-RateLimit-Limit: 
+              description: Максимальное количество запросов
+              required: true
+              schema:
+                type: integer
+            X-RateLimit-Remaining: 
+              description: Осталось запросов
+              required: true
+              schema:
+                type: integer
+            X-RateLimit-Reset: 
+              description: Секунд до сброса
+              required: true
+              schema:
+                type: integer
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/Error' 
+        '500':
+          description: Произошла непредвиденная ошибка. Мы уже работаем над её исправлением.
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    PartnerListResponse:
+      type: object
+      required:
+        - results
+        - pagination
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Store'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Store:
+      type: object
+      required: 
+        - id
+        - name
+        - logo_url
+        - delivery
+        - partner_url
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Идентификатор партнёра
+          example: 2a4acb07-5471-466d-a838-7dff70bab934
+        name: 
+          type: string
+          description: Название партнёра
+          example: 'METRO'
+        logo_url:
+          type: string
+          description: Ссылка на логотип партнера
+          example: 'https://assets.petrushkazelenaya.com/partners/metro/logo.png'
+        delivery: 
+          $ref: '#/components/schemas/Delivery'
+        partner_url:
+          type: string
+          description: Ссылка для перехода на внешний ресурс 
+          example: 'https://victoria-group.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners'
+    Delivery:
+      oneOf:
+        - $ref: '#/components/schemas/SlotDelivery'
+        - $ref: '#/components/schemas/ExpressDelivery'
+      discriminator:
+        propertyName: delivery_type
+        mapping: 
+          slot: '#/components/schemas/SlotDelivery'
+          express: '#/components/schemas/ExpressDelivery'
+    SlotDelivery:
+      type: object
+      required:
+        - delivery_type
+        - slot_from
+        - slot_to
+      properties:
+        delivery_type:
+          type: string
+          enum: [slot]
+        slot_from:
+          type: string
+          format: date-time
+          description: Начало слота
+          example: '2026-07-05T18:00:00Z'
+        slot_to:
+          type: string
+          format: date-time
+          description: Конец слота
+          example: '2026-07-05T20:00:00Z'
+    ExpressDelivery:
+      type: object
+      required:
+        - delivery_type
+        - duration_min_minutes
+        - duration_max_minutes
+      properties:
+        delivery_type:
+          type: string
+          enum: [express]
+        duration_min_minutes:
+          type: integer
+          description: Минимальное время доставки (минуты)
+          example: 15
+        duration_max_minutes:
+          type: integer
+          description: Максимальное время доставки (минуты)
+          example: 90
+    Pagination:
+      type: object
+      required:
+        - offset
+        - limit
+        - total
+      properties:
+        offset:
+          type: integer
+          description: Смещение текущей выборки
+          example: 0
+        limit:
+          type: integer
+          description: Размер страницы
+          example: 20
+        total:
+          type: integer
+          description: Общее количество магазинов-партнёров
+          example: 57
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          example: 429
+        message:
+          type: string
+          example: Превышен лимит запросов. Повторите попытку позже
+
+          
+      
