@@ -74,7 +74,7 @@
 | Параметр | Значение |
 |---|---|
 | Метод | GET |
-| Base URL | `https://api.petrushkazelenaya.com/api/v1/` |
+| Base URL | `https://api.petrushkazelenaya.com/api/v1` |
 | Endpoint | `/partners` |
 | Headers | `Accept: application/json` |
 | Path-параметры | нет |
@@ -96,7 +96,7 @@ GET https://api.petrushkazelenaya.com/api/v1/partners?offset=0&limit=20&sort=asc
 Тело ответа (Body):
 ```json
 {
-    "data": [
+    "results": [
         {
             "id": "2a4acb07-5471-466d-a838-7dff70bab934",
             "name": "METRO",
@@ -159,10 +159,10 @@ GET https://api.petrushkazelenaya.com/api/v1/partners?offset=0&limit=20&sort=asc
 | results[].logo_url | string (URL) | да | Ссылка на логотип партнера |
 | results[].delivery | object | да | Информация о доставке |
 | results[].delivery.delivery_type | enum: `slot`, `express` | да | Тип доставки |
-| results[].delivery.slot_from | string (date-time, UTC) | при type=slot | Начало слота |
-| results[].delivery.slot_to | string (date-time, UTC) | при type=slot | Конец слота |
-| results[].delivery.duration_min_minutes | integer | при type=express | Минимальное время доставки (минуты) |
-| results[].delivery.duration_max_minutes | integer | при type=express | Максимальное время доставки (минуты) |
+| results[].delivery.slot_from | string (date-time, UTC) | при delivery_type=slot | Начало слота |
+| results[].delivery.slot_to | string (date-time, UTC) | при delivery_type=slot | Конец слота |
+| results[].delivery.duration_min_minutes | integer | при delivery_type=express | Минимальное время доставки (минуты) |
+| results[].delivery.duration_max_minutes | integer | при delivery_type=express | Максимальное время доставки (минуты) |
 | results[].partner_url | string (URL) | да | Ссылка для перехода на внешний ресурс (по клику на плашку) |
 | pagination.offset | integer | да | Смещение текущей выборки |
 | pagination.limit | integer | да | Размер страницы |
@@ -173,7 +173,7 @@ GET https://api.petrushkazelenaya.com/api/v1/partners?offset=0&limit=20&sort=asc
 **Пример 2 - Список партнеров пустой**
 ``` json
 {
-  "results": []
+  "results": [],
   "pagination": { "offset": 0, "limit": 20, "total": 0 }
 }
 ```
@@ -192,8 +192,8 @@ X-RateLimit-Reset: 60
 Тело ответа (Body):
 ``` json
 {
-  "code": "429",
-  "message": "Превышен лимит запросов. Повторите попытку позже",
+  "code": 429,
+  "message": "Превышен лимит запросов. Повторите попытку позже"
 }
 ```
 2. Ошибка сервера.
@@ -208,7 +208,7 @@ X-RateLimit-Reset: 60
 
 ``` json
 {
-    "code": "500",
+    "code": 500,
     "message": "Произошла непредвиденная ошибка. Мы уже работаем над её исправлением."
 }
 ```
