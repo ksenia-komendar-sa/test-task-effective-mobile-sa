@@ -164,6 +164,9 @@ GET https://api.petrushkazelenaya.com/api/v1/partners?offset=0&limit=20&sort=asc
 | results[].delivery.duration_min_minutes | integer | при type=express | Минимальное время доставки (минуты) |
 | results[].delivery.duration_max_minutes | integer | при type=express | Максимальное время доставки (минуты) |
 | results[].partner_url | string (URL) | да | Ссылка для перехода на внешний ресурс (по клику на плашку) |
+| pagination.offset | integer | да | Смещение текущей выборки |
+| pagination.limit | integer | да | Размер страницы |
+| pagination.total | integer | да | Общее количество магазинов-партнёров | 
 
 **Код HTTP: 200 OK**
 
@@ -171,6 +174,7 @@ GET https://api.petrushkazelenaya.com/api/v1/partners?offset=0&limit=20&sort=asc
 ``` json
 {
   "results": []
+  "pagination": { "offset": 0, "limit": 20, "total": 0 }
 }
 ```
 ### Обработка ошибок
@@ -188,9 +192,8 @@ X-RateLimit-Reset: 60
 Тело ответа (Body):
 ``` json
 {
-  "code": "1021",
+  "code": "429",
   "message": "Превышен лимит запросов. Повторите попытку позже",
-  "retry_after": 60
 }
 ```
 2. Ошибка сервера.
@@ -205,7 +208,7 @@ X-RateLimit-Reset: 60
 
 ``` json
 {
-    "code": "2000",
+    "code": "500",
     "message": "Произошла непредвиденная ошибка. Мы уже работаем над её исправлением."
 }
 ```
