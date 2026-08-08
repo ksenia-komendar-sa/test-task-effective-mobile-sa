@@ -63,6 +63,8 @@
 **Общее описание**
 Метод возвращает список магазинов партнеров и предназначен для мобильного приложения покупателей интернет-магазина "Петрушка Зеленая". Метод вызывается при переходе пользователя на экран со списком магазинов партнеров. По клику на плашку магазина партнера из списка осуществляется переход по ссылке на внешний ресурс.
 
+**Полная OpenAPI 3.0 спецификация:**
+
 **Доступы и ограничения**
 - Метод публичный (допущение: данные не персонализированы, нет чувствительной информации)
 - Rate limit: ~ 50 запросов/мин на IP (допущение: уточнить по результатам нагрузки)
@@ -72,17 +74,17 @@
 | Параметр | Значение |
 |---|---|
 | Метод | GET |
-| Base URL | `https://api.petrushkazelenaya.com` |
-| Endpoint | `/api/v1/partners` |
+| Base URL | `https://api.petrushkazelenaya.com/api/v1/` |
+| Endpoint | `/partners` |
 | Headers | `Accept: application/json` |
 | Path-параметры | нет |
-| Query-параметры | нет |
+| Query-параметры | `offset` (integer, ≥0, default 0), `limit` (integer, 1–20, default 20), `sort` (enum: asc/desc, default asc — сортировка по скорости доставки) |
 | Тело запроса | нет |
 | Авторизация | не требуется (публичный метод) |
 
 **Пример запроса:**
 ```http
-GET https://api.petrushkazelenaya.com/api/v1/partners
+GET https://api.petrushkazelenaya.com/api/v1/partners?offset=0&limit=20&sort=asc
 ```
   
 ### Пример ответа - Успех
@@ -94,13 +96,13 @@ GET https://api.petrushkazelenaya.com/api/v1/partners
 Тело ответа (Body):
 ```json
 {
-    "results": [
+    "data": [
         {
             "id": "2a4acb07-5471-466d-a838-7dff70bab934",
             "name": "METRO",
             "logo_url": "https://assets.petrushkazelenaya.com/partners/metro/logo.png",
             "delivery": {
-                "type": "slot",
+                "delivery_type": "slot",
                 "slot_from": "2026-07-05T18:00:00Z",
                 "slot_to": "2026-07-05T20:00:00Z"
             },
@@ -111,7 +113,7 @@ GET https://api.petrushkazelenaya.com/api/v1/partners
             "name": "Ашан",
             "logo_url": "https://assets.petrushkazelenaya.com/partners/auchan/logo.png",
             "delivery": {
-                "type": "slot",
+                "delivery_type": "slot",
                 "slot_from": "2026-07-05T15:00:00Z",
                 "slot_to": "2026-07-05T17:00:00Z"
             },
@@ -122,7 +124,7 @@ GET https://api.petrushkazelenaya.com/api/v1/partners
             "name": "ВкусВилл",
             "logo_url": "https://assets.petrushkazelenaya.com/partners/vkusvill/logo.png",
             "delivery": {
-                "type": "express",
+                "delivery_type": "express",
                 "duration_min_minutes": 20,
                 "duration_max_minutes": 60
             },
@@ -133,13 +135,18 @@ GET https://api.petrushkazelenaya.com/api/v1/partners
             "name": "ВИКТОРИЯ",
             "logo_url": "https://assets.petrushkazelenaya.com/partners/viktoria/logo.png",
             "delivery": {
-                "type": "slot",
+                "delivery_type": "slot",
                 "slot_from": "2026-07-05T14:00:00Z",
                 "slot_to": "2026-07-05T16:00:00Z"
             },
             "partner_url": "https://victoria-group.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners"
         }
-    ]
+    ],
+    "pagination": {
+        "offset": 0,
+        "limit": 20,
+        "total": 57
+    }
 }
 ```
 **Схема ответа:**
@@ -151,7 +158,7 @@ GET https://api.petrushkazelenaya.com/api/v1/partners
 | results[].name | string | да | Название партнёра |
 | results[].logo_url | string (URL) | да | Ссылка на логотип партнера |
 | results[].delivery | object | да | Информация о доставке |
-| results[].delivery.type | enum: `slot`, `express` | да | Тип доставки |
+| results[].delivery.delivery_type | enum: `slot`, `express` | да | Тип доставки |
 | results[].delivery.slot_from | string (date-time, UTC) | при type=slot | Начало слота |
 | results[].delivery.slot_to | string (date-time, UTC) | при type=slot | Конец слота |
 | results[].delivery.duration_min_minutes | integer | при type=express | Минимальное время доставки (минуты) |
