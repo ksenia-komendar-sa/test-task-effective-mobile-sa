@@ -1,7 +1,7 @@
 openapi: 3.0.4
 info:
   title: Food-delivery API
-  description: API спецификация для интернет-магазина "Петрушка зеленая". Это мобильное приложение по доставке еды.
+  description: API мобильного приложения доставки продуктов «Петрушка Зелёная». Текущая версия покрывает экран со списком магазинов-партнёров.
   version: 1.0.0
   contact: 
     name: Ксения Комендарь
@@ -11,35 +11,52 @@ servers:
     description: Production environment
 tags: 
   - name: partners
-    description: магазины-партнеры
+    description: Магазины-партнеры
+security: []
 paths:
   /partners:
     get:
       tags:
         - partners
       summary: Получить список магазинов партнеров
-      description: Показывает список магазинов-партнеров при переходе с главного экрана 
+      description: |
+        Возвращает список магазинов-партнёров для экрана «Магазины-партнёры».
+        Метод публичный: данные не персонализированы и не содержат
+        чувствительной информации.
       operationId: getPartnerStores
       parameters:
         - name: offset
           in: query
-          description: Колличество элементов которые нужно пропустить перед выдачей результата
+          required: false
+          description: Количество элементов которые нужно пропустить перед выдачей результата
           schema:
             type: integer
             minimum: 0
             default: 0
+          example: 0
         - name: limit
           in: query
+          required: false
           description: Количество элементов на странице
           schema:
             type: integer
             minimum: 1
             maximum: 20
             default: 20 
+          example: 20
         - name: sort
           in: query
-          description: Сортировка по скорости доставки
           required: false
+          description: |
+            Сортировка по ближайшему времени доставки.
+ 
+            Оба типа доставки приводятся к единой шкале — ожидаемому времени
+            получения заказа относительно момента запроса:
+            * `express` — текущее время + `duration_min_minutes`;
+            * `slot` — значение `slot_from`.
+ 
+            `asc` — сначала самые быстрые, `desc` — сначала самые долгие.
+            При равных значениях порядок определяется по `name` (по возрастанию).
           schema: 
             type: string
             enum: 
@@ -53,39 +70,103 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PartnerListResponse'
+              examples:
+                partnersFound:
+                  summary: Список партнёров получен
+                  value:
+                    results:
+                      - id: 2a4acb07-5471-466d-a838-7dff70bab934
+                        name: METRO
+                        logo_url: https://assets.petrushkazelenaya.com/partners/metro/logo.png
+                        delivery:
+                          delivery_type: slot
+                          slot_from: '2026-07-05T18:00:00Z'
+                          slot_to: '2026-07-05T20:00:00Z'
+                        partner_url: https://www.metro-cc.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners
+                      - id: 2255e540-7afb-4ad2-8246-728a070fec4f
+                        name: ВкусВилл
+                        logo_url: https://assets.petrushkazelenaya.com/partners/vkusvill/logo.png
+                        delivery:
+                          delivery_type: express
+                          duration_min_minutes: 20
+                          duration_max_minutes: 60
+                        partner_url: https://www.vkusvill.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners
+                    pagination:
+                      offset: 0
+                      limit: 20
+                      total: 57
+                emptyList:
+                  summary: Партнёров нет
+                  value:
+                    results: []
+                    pagination:
+                      offset: 0
+                      limit: 20
+                      total: 0
+        '400':
+          description: |
+            Некорректные параметры запроса: значение вне допустимого диапазона
+            (`limit` вне 1–20, отрицательный `offset`), недопустимое значение
+            `sort` или нечисловое значение в числовом параметре.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidLimit:
+                  summary: limit вне допустимого диапазона
+                  value:
+                    code: INVALID_QUERY_PARAM
+                    message: Параметр limit должен быть целым числом от 1 до 20
+                invalidSort:
+                  summary: Недопустимое значение sort
+                  value:
+                    code: INVALID_QUERY_PARAM
+                    message: Параметр sort должен принимать значение asc или desc
         '429':
-          description: Превышен лимит запросов. Повторите попытку позже
+          description: Превышен лимит запросов. 
           headers:
             Retry-After: 
-              description: Время ожидания в секундах
+              description: Время ожидания до следующей попытки, секунды
               required: true
               schema:
                 type: integer
+              example: 60
             X-RateLimit-Limit: 
-              description: Максимальное количество запросов
+              description: Максимальное количество запросов в окне
               required: true
               schema:
                 type: integer
+              example: 50
             X-RateLimit-Remaining: 
-              description: Осталось запросов
+              description: Осталось запросов в текущем окне
               required: true
               schema:
                 type: integer
+              example: 0
             X-RateLimit-Reset: 
-              description: Секунд до сброса
+              description: Секунд до сброса окна
               required: true
               schema:
                 type: integer
+              example: 60
           content: 
             application/json: 
               schema: 
                 $ref: '#/components/schemas/Error' 
+              example:
+                code: RATE_LIMIT_EXCEEDED
+                message: Превышен лимит запросов. Повторите попытку позже
         '500':
-          description: Произошла непредвиденная ошибка. Мы уже работаем над её исправлением.
+          description: Внутренняя ошибка сервера.
           content: 
             application/json: 
               schema: 
                 $ref: '#/components/schemas/Error'
+              example:
+                code: INTERNAL_ERROR
+                message: Произошла непредвиденная ошибка. Мы уже работаем над её исправлением
+              
 components:
   schemas:
     PartnerListResponse:
@@ -96,6 +177,7 @@ components:
       properties:
         results:
           type: array
+          description: Список партнёров. Пустой массив, если партнёров нет
           items:
             $ref: '#/components/schemas/Store'
         pagination:
@@ -120,15 +202,18 @@ components:
           example: 'METRO'
         logo_url:
           type: string
+          format: uri
           description: Ссылка на логотип партнера
-          example: 'https://assets.petrushkazelenaya.com/partners/metro/logo.png'
+          example: https://assets.petrushkazelenaya.com/partners/metro/logo.png
         delivery: 
           $ref: '#/components/schemas/Delivery'
         partner_url:
           type: string
-          description: Ссылка для перехода на внешний ресурс 
-          example: 'https://victoria-group.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners'
+          format: uri
+          description: Ссылка на внешний ресурс партнёра, открывается по клику на плашку 
+          example: https://www.metro-cc.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners
     Delivery:
+      description: Информация о доставке. Набор полей зависит от типа доставки
       oneOf:
         - $ref: '#/components/schemas/SlotDelivery'
         - $ref: '#/components/schemas/ExpressDelivery'
@@ -139,6 +224,7 @@ components:
           express: '#/components/schemas/ExpressDelivery'
     SlotDelivery:
       type: object
+      description: Доставка в заранее заданном временном слоте
       required:
         - delivery_type
         - slot_from
@@ -150,15 +236,16 @@ components:
         slot_from:
           type: string
           format: date-time
-          description: Начало слота
+          description: Начало слота, UTC
           example: '2026-07-05T18:00:00Z'
         slot_to:
           type: string
           format: date-time
-          description: Конец слота
+          description: Конец слота, UTC
           example: '2026-07-05T20:00:00Z'
     ExpressDelivery:
       type: object
+      description: Экспресс-доставка с оценкой длительности в минутах
       required:
         - delivery_type
         - duration_min_minutes
@@ -169,12 +256,15 @@ components:
           enum: [express]
         duration_min_minutes:
           type: integer
-          description: Минимальное время доставки (минуты)
-          example: 15
+          minimum: 1
+          description: Минимальное время доставки, минуты
+          example: 20
         duration_max_minutes:
           type: integer
-          description: Максимальное время доставки (минуты)
-          example: 90
+          minimum: 1
+          description: Максимальное время доставки, минуты
+          example: 60
+
     Pagination:
       type: object
       required:
@@ -201,11 +291,18 @@ components:
         - message
       properties:
         code:
-          type: integer
-          example: 429
+          type: string
+          description: Машиночитаемый код ошибки для обработки на клиенте
+          enum:
+            - INVALID_QUERY_PARAM
+            - RATE_LIMIT_EXCEEDED
+            - INTERNAL_ERROR
+          example: RATE_LIMIT_EXCEEDED
         message:
           type: string
+          description: Человекочитаемое описание ошибки
           example: Превышен лимит запросов. Повторите попытку позже
+          
 
           
       
