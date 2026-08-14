@@ -1,7 +1,7 @@
 openapi: 3.0.4
 info:
-  title: Food-delivery API
-  description: API мобильного приложения доставки продуктов «Петрушка Зелёная». Текущая версия покрывает экран со списком магазинов-партнёров.
+  title: Петрушка Зелёная — Partners API
+  description: API мобильного приложения доставки продуктов "Петрушка Зелёная". Текущая версия покрывает экран со списком магазинов-партнеров.
   version: 1.0.0
   contact: 
     name: Ксения Комендарь
@@ -18,9 +18,9 @@ paths:
     get:
       tags:
         - partners
-      summary: Получить список магазинов партнеров
+      summary: Получить список магазинов-партнеров
       description: |
-        Возвращает список магазинов-партнёров для экрана «Магазины-партнёры».
+        Возвращает список магазинов-партнеров для экрана "Магазины-партнеры".
         Метод публичный: данные не персонализированы и не содержат
         чувствительной информации.
       operationId: getPartnerStores
@@ -28,7 +28,7 @@ paths:
         - name: offset
           in: query
           required: false
-          description: Количество элементов которые нужно пропустить перед выдачей результата
+          description: Количество элементов, которые нужно пропустить перед выдачей результата
           schema:
             type: integer
             minimum: 0
@@ -72,7 +72,7 @@ paths:
                 $ref: '#/components/schemas/PartnerListResponse'
               examples:
                 partnersFound:
-                  summary: Список партнёров получен
+                  summary: Список партнеров получен
                   value:
                     results:
                       - id: 2a4acb07-5471-466d-a838-7dff70bab934
@@ -96,7 +96,7 @@ paths:
                       limit: 20
                       total: 57
                 emptyList:
-                  summary: Партнёров нет
+                  summary: Партнеров нет
                   value:
                     results: []
                     pagination:
@@ -124,7 +124,7 @@ paths:
                     code: INVALID_QUERY_PARAM
                     message: Параметр sort должен принимать значение asc или desc
         '429':
-          description: Превышен лимит запросов. 
+          description: Превышен лимит запросов 
           headers:
             Retry-After: 
               description: Время ожидания до следующей попытки, секунды
@@ -158,14 +158,14 @@ paths:
                 code: RATE_LIMIT_EXCEEDED
                 message: Превышен лимит запросов. Повторите попытку позже
         '500':
-          description: Внутренняя ошибка сервера.
+          description: Внутренняя ошибка сервера
           content: 
             application/json: 
               schema: 
                 $ref: '#/components/schemas/Error'
               example:
                 code: INTERNAL_ERROR
-                message: Произошла непредвиденная ошибка. Мы уже работаем над её исправлением
+                message: Произошла непредвиденная ошибка. Мы уже работаем над ее исправлением
               
 components:
   schemas:
@@ -177,7 +177,7 @@ components:
       properties:
         results:
           type: array
-          description: Список партнёров. Пустой массив, если партнёров нет
+          description: Список партнеров. Пустой массив, если партнеров нет
           items:
             $ref: '#/components/schemas/Store'
         pagination:
@@ -194,11 +194,11 @@ components:
         id:
           type: string
           format: uuid
-          description: Идентификатор партнёра
+          description: Идентификатор партнера
           example: 2a4acb07-5471-466d-a838-7dff70bab934
         name: 
           type: string
-          description: Название партнёра
+          description: Название партнера
           example: 'METRO'
         logo_url:
           type: string
@@ -210,7 +210,7 @@ components:
         partner_url:
           type: string
           format: uri
-          description: Ссылка на внешний ресурс партнёра, открывается по клику на плашку 
+          description: Ссылка на внешний ресурс партнера, открывается по клику на плашку 
           example: https://www.metro-cc.ru/?utm_source=petrushkazelenaya&utm_medium=app&utm_campaign=partners
     Delivery:
       description: Информация о доставке. Набор полей зависит от типа доставки
@@ -282,7 +282,7 @@ components:
           example: 20
         total:
           type: integer
-          description: Общее количество магазинов-партнёров
+          description: Общее количество магазинов-партнеров
           example: 57
     Error:
       type: object
